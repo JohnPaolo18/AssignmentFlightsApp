@@ -1,0 +1,175 @@
+﻿@page "/flight"
+@using AssignmentFlightsApp.Models
+
+<div class="container">
+    <h3 class="text-center">Flight finder</h3>
+    <div class="row">
+        <div class="col">
+            <div class="row">
+                <div class="col">
+                    <label for="from">From</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <select @bind="selectOption.DepartureAirport" class="form-select" aria-label="Default select example" name="from">
+                        @foreach (string departure in departureAirport)
+                        {
+                            <option value="@departure">@departure</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="row">
+                <div class="col">
+                    <label for="to">To</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <select @bind="selectOption.ArrivalAirport" class="form-select" aria-label="Default select example" name="to">
+                        @foreach (string arrival in arrivalAirport)
+                        {
+                            <option value="@arrival">@arrival</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="row">
+                <div class="col">
+                    <label for="day">Day</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <select @bind="selectOption.Weekday" class="form-select" aria-label="Default select example" name="day">
+                        @foreach (string day in weekdays)
+                        {
+                            <option value="@day">@day</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="row py-4">
+                <button @onclick="SearchFlights" class="btn btn-primary">Find flight</button>
+            </div>
+        </div>
+    </div>
+    <h2 class="text-center p-2">Flights</h2>
+    <div class="row">
+        <select class="form-select" aria-label="Default select example" name="matchingFlight">
+            @foreach (Flight flight in matchingFlights)
+            {
+                <option value="@flight">@flight</option>
+            }
+        </select>
+    </div>
+
+    <h2 class="text-center p-2">Reserve</h2>
+    <div class="row">
+        <div class="col">
+            <label for="Flight Code">Flight Code</label>
+        </div>
+        <select class="form-select" aria-label="Default select example" name="matchingFlight">
+            @foreach (Flight flight in matchingFlights)
+            {
+                <option value="@flight">@flight.Code</option>
+            }
+        </select>
+    </div>
+    <div class="row">
+        <div class="col">
+            <label for="Airline">Airline</label>
+        </div>
+        <select class="form-select" aria-label="Default select example" name="matchingFlight">
+            @foreach (Flight flight in matchingFlights)
+            {
+                <option value="@flight">@flight.Airline</option>
+            }
+        </select>
+    </div>
+    <div class="row">
+        <div class="col">
+            <label for="Day">Day</label>
+        </div>
+        <select class="form-select" aria-label="Default select example" name="matchingFlight">
+            @foreach (Flight flight in matchingFlights)
+            {
+                <option value="@flight">@flight.Weekday</option>
+            }
+        </select>
+    </div>
+    <div class="row">
+        <div class="col">
+            <label for="Time">Time</label>
+        </div>
+        <select class="form-select" aria-label="Default select example" name="matchingFlight">
+            @foreach (Flight flight in matchingFlights)
+            {
+                <option value="@flight">@flight.Time</option>
+            }
+        </select>
+    </div>
+    <div class="row">
+        <div class="col">
+            <label for="Cost">Cost</label>
+        </div>
+        <select class="form-select" aria-label="Default select example" name="matchingFlight">
+            @foreach (Flight flight in matchingFlights)
+            {
+                <option value="@flight">@flight.CostPerSeat</option>
+            }
+        </select>
+    </div>
+    <div class="flex-item input-container">
+        <label for="Name">Name</label>
+    </div>
+    <div class="flex-item input-container" aria-label="Default select example" name="Name">
+        <input type="text" id="name" placeholder="Name">
+    </div>
+    <div class="flex-item input-container">
+        <label for="Citizenship">Citizenship</label>
+    </div>
+    <div class="flex-item input-container" aria-label="Default select example" name="Citizenship">
+        <input type="text" id="Citizenship" placeholder="Citizenship">
+    </div> 
+    <div class="col">
+        <div class="row py-4">
+            <button @onclick="SaveReservation" class="btn btn-primary">reservation</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .flex-item{
+        flex: 1;
+    }
+
+    .flex-item input {
+        height: 40px;
+        width: 102%;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        font-size: 1em;
+        align-items: center;
+        margin-left: -10px;
+    }
+
+    .flex-item input:focus {
+        border: 1px solid #007bff;
+        outline: none;
+    }
+</style>
+
+    
+
+@code {
+
+
+}
