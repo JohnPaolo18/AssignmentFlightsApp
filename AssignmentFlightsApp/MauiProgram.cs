@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using AssignmentFlightsApp.Models;
+using Microsoft.Extensions.Logging;
 
 namespace AssignmentFlightsApp
 {
@@ -19,9 +20,12 @@ namespace AssignmentFlightsApp
 #if DEBUG
     		builder.Services.AddBlazorWebViewDeveloperTools();
     		builder.Logging.AddDebug();
+
+            builder.Services.AddSingleton<ReservationManager>();
 #endif
 
             return builder.Build();
         }
+
     }
 }

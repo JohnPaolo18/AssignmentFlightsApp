@@ -1,147 +1,122 @@
 ﻿@page "/flight"
 @using AssignmentFlightsApp.Models
+@inject ReservationManager ReservationManager
 
 <div class="container">
-    <h3 class="text-center">Flight finder</h3>
-    <div class="row">
-        <div class="col">
-            <div class="row">
-                <div class="col">
-                    <label for="from">From</label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <select @bind="selectOption.DepartureAirport" class="form-select" aria-label="Default select example" name="from">
-                        @foreach (string departure in departureAirport)
-                        {
-                            <option value="@departure">@departure</option>
-                        }
-                    </select>
-                </div>
-            </div>
+    <h3 class="text-center mb-3">Flight Finder</h3>
+    <div class="row g-3">
+        <div class="col-md-3">
+            <label for="from" class="form-label">From</label>
+            <select @bind="selectOption.DepartureAirport" class="form-select" id="from">
+                @foreach (var airport in departureAirport)
+                {
+                    <option value="@airport">@airport</option>
+                }
+            </select>
         </div>
-        <div class="col">
-            <div class="row">
-                <div class="col">
-                    <label for="to">To</label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <select @bind="selectOption.ArrivalAirport" class="form-select" aria-label="Default select example" name="to">
-                        @foreach (string arrival in arrivalAirport)
-                        {
-                            <option value="@arrival">@arrival</option>
-                        }
-                    </select>
-                </div>
-            </div>
+        <div class="col-md-3">
+            <label for="to" class="form-label">To</label>
+            <select @bind="selectOption.ArrivalAirport" class="form-select" id="to">
+                @foreach (var airport in arrivalAirport)
+                {
+                    <option value="@airport">@airport</option>
+                }
+            </select>
         </div>
-        <div class="col">
-            <div class="row">
-                <div class="col">
-                    <label for="day">Day</label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <select @bind="selectOption.Weekday" class="form-select" aria-label="Default select example" name="day">
-                        @foreach (string day in weekdays)
-                        {
-                            <option value="@day">@day</option>
-                        }
-                    </select>
-                </div>
-            </div>
+        <div class="col-md-3">
+            <label for="day" class="form-label">Day</label>
+            <select @bind="selectOption.Weekday" class="form-select" id="day">
+                @foreach (var day in weekdays)
+                {
+                    <option value="@day">@day</option>
+                }
+            </select>
         </div>
-        <div class="col">
-            <div class="row py-4">
-                <button @onclick="SearchFlights" class="btn btn-primary">Find flight</button>
-            </div>
+        <div class="col-md-3 align-self-end">
+            <button @onclick="SearchFlights" class="btn btn-primary w-100">Find Flights</button>
         </div>
-    </div>
-    <h2 class="text-center p-2">Flights</h2>
-    <div class="row">
-        <select class="form-select" aria-label="Default select example" name="matchingFlight">
-            @foreach (Flight flight in matchingFlights)
-            {
-                <option value="@flight">@flight</option>
-            }
-        </select>
     </div>
 
-    <h2 class="text-center p-2">Reserve</h2>
-    <div class="row">
+    <h3 class="text-center mb-2 mt-2">Flights</h3>
+    <div class="row g-3">
         <div class="col">
-            <label for="Flight Code">Flight Code</label>
-        </div>
-        <select class="form-select" aria-label="Default select example" name="matchingFlight">
-            @foreach (Flight flight in matchingFlights)
+            <label for="selectedFlight" class="form-label">Flights</label>
+            <select @bind="selectedFlightCode" class="form-select" id="selectedFlight">
+                <option value="">Select a Flight...</option>
+                @foreach (var flight in matchingFlights)
+                {
+                    <option value="@flight.FlightCode">@flight.FlightCode - @flight.Airline - @flight.From - @flight.To - @flight.Weekday - @flight.Time - @flight.CostPerSeat</option>
+                }
+            </select>
+            @if (searchPerformed && !matchingFlights.Any())
             {
-                <option value="@flight">@flight.Code</option>
+                <div class="alert alert-warning" role="alert">
+                    No matching flights found.
+                </div>
             }
-        </select>
+        </div>
     </div>
-    <div class="row">
+
+    <h3 class="text-center mb-2 mt-2">Reserve</h3>
+    <div class="row g-3">
         <div class="col">
-            <label for="Airline">Airline</label>
+            <label for="FlightCode" class="form-label">Flight Code</label>
+            <input type="text" class="form-control" id="FlightCode" value="@selectedFlight?.FlightCode" readonly>
         </div>
-        <select class="form-select" aria-label="Default select example" name="matchingFlight">
-            @foreach (Flight flight in matchingFlights)
-            {
-                <option value="@flight">@flight.Airline</option>
-            }
-        </select>
     </div>
-    <div class="row">
+
+    <div class="row g-3">
         <div class="col">
-            <label for="Day">Day</label>
+            <label for="Airline" class="form-label">Airline</label>
+            <input type="text" class="form-control" id="Airline" value="@selectedFlight?.Airline" readonly>
         </div>
-        <select class="form-select" aria-label="Default select example" name="matchingFlight">
-            @foreach (Flight flight in matchingFlights)
-            {
-                <option value="@flight">@flight.Weekday</option>
-            }
-        </select>
     </div>
-    <div class="row">
+
+    <div class="row g-3">
         <div class="col">
-            <label for="Time">Time</label>
+            <label for="Day" class="form-label">Day</label>
+            <input type="text" class="form-control" id="Day" value="@selectedFlight?.Weekday" readonly>
         </div>
-        <select class="form-select" aria-label="Default select example" name="matchingFlight">
-            @foreach (Flight flight in matchingFlights)
-            {
-                <option value="@flight">@flight.Time</option>
-            }
-        </select>
     </div>
-    <div class="row">
+
+    <div class="row g-3">
         <div class="col">
-            <label for="Cost">Cost</label>
+            <label for="Time" class="form-label">Time</label>
+            <input type="text" class="form-control" id="Time" value="@selectedFlight?.Time" readonly>
         </div>
-        <select class="form-select" aria-label="Default select example" name="matchingFlight">
-            @foreach (Flight flight in matchingFlights)
-            {
-                <option value="@flight">@flight.CostPerSeat</option>
-            }
-        </select>
     </div>
-    <div class="flex-item input-container">
-        <label for="Name">Name</label>
+
+    <div class="row g-3">
+        <div class="col">
+            <label for="Cost" class="form-label">Cost</label>
+            <input type="text" class="form-control" id="Cost" value="@selectedFlight?.CostPerSeat" readonly>
+        </div>
     </div>
-    <div class="flex-item input-container" aria-label="Default select example" name="Name">
-        <input type="text" id="name" placeholder="Name">
+
+    <div class="row g-3">
+        <div class="col">
+            <label for="Name" class="form-label">Name</label>
+            <input type="text" class="form-control" id="Name" @bind="selectOption.Name" placeholder="Enter your name">
+        </div>
     </div>
-    <div class="flex-item input-container">
-        <label for="Citizenship">Citizenship</label>
+
+    <div class="row g-3 mb-2">
+        <div class="col">
+            <label for="Citizenship" class="form-label">Citizenship</label>
+            <input type="text" class="form-control" id="Citizenship" @bind="selectOption.Citizenship" placeholder="Enter your citizenship">
+        </div>
     </div>
-    <div class="flex-item input-container" aria-label="Default select example" name="Citizenship">
-        <input type="text" id="Citizenship" placeholder="Citizenship">
-    </div> 
-    <div class="col">
-        <div class="row py-4">
-            <button @onclick="SaveReservation" class="btn btn-primary">reservation</button>
+
+    <div class="row g-3">
+        <div class="col text-center">
+            <button @onclick="ReserveSeat" class="btn btn-primary" disabled="@(!CanReserve)">Reserve</button>
+            <div class="d-flex align-items-center justify-content-center">
+                <p class="m-0">Reservation Code:</p>
+                @if (!string.IsNullOrEmpty(newReservationCode))
+                {
+                    <p id="reservationCodeDisplay" class="m-0">@newReservationCode</p>
+                }
+            </div>
         </div>
     </div>
 </div>
@@ -195,95 +170,32 @@
 </div>
 
 <style>
-    .flex-item{
-        flex: 1;
-    }
-
-    .flex-item input {
-        height: 40px;
-        width: 102%;
-        border: 1px solid #ced4da;
-        border-radius: 4px;
-        font-size: 1em;
-        align-items: center;
-        margin-left: -10px;
-    }
-
     .flex-item input:focus {
         border: 1px solid #007bff;
         outline: none;
     }
 </style>
 
-    
-
 @code {
+    private string selectedFlightCode { get; set; }
+    private Flight selectedFlight => matchingFlights.FirstOrDefault(f => f.FlightCode == selectedFlightCode);
+    private bool searchPerformed = false;
 
-    //ROMERRS PART
-    string inputResCode = "";
-    string inputAirline = "";
-    string inputName = "";
-    string currentReservation;
+    private bool CanReserve => selectedFlight != null && !string.IsNullOrWhiteSpace(selectOption.Name) && !string.IsNullOrWhiteSpace(selectOption.Citizenship);
 
-    Flight.Reservations fr = new Flight.Reservations();
-    List<Reservation> reservations;
-    List<Reservation> resNew = new List<Reservation>();
+    private string newReservationCode;
 
-    /*This is the method called after the "Find Flights" button is clicked.
-     * It will find reserved flights from reservation.csv file according to
-     * user inputs of reservation code and/or airline and/or name.
-    */
-    private void SearchReservations()
+    private void ReserveSeat()
     {
-        reservations = Flight.Reservations.GetReservations();
-        resNew.Clear();
-        Reservation NewReservation;
+        if (string.IsNullOrWhiteSpace(selectOption.Name) || string.IsNullOrWhiteSpace(selectOption.Citizenship))
+        {
+            Console.WriteLine("Name and citizenship are required to make a reservation.");
+            return;
+        }
 
-        if ((inputResCode != "") || (inputAirline != "") || (inputName != ""))
-        {
-            foreach (var res in reservations)
-            {
-                if (((inputResCode != "") && (inputResCode.ToUpper() == res.Code.ToUpper())) &&
-                    ((inputAirline != "") && (inputAirline.ToUpper() == res.Airline.ToUpper())) &&
-                    ((inputName != "") && (inputName.ToUpper() == res.Name.ToUpper())))
-                {
-                    NewReservation = new Reservation(res.Code, res.FlightCode, res.Airline, res.Cost, res.Name, res.Citizenship, res.Active.ToString());
-                    resNew.Add(NewReservation);
-                }
-                // Add other cases to find reservations by code, name, and/or airline
-                // For code
-                else if (string.IsNullOrEmpty(inputResCode) && string.IsNullOrEmpty(inputAirline) && !string.IsNullOrEmpty(inputName))
-                {
-                    if (res.Name.ToUpper() == inputName.ToUpper())
-                    {
-                        NewReservation = new Reservation(res.Code, res.FlightCode, res.Airline, res.Cost, res.Name, res.Citizenship, res.Active.ToString());
-                        resNew.Add(NewReservation);
-                    }
-                }
-                // For airline
-                else if (string.IsNullOrEmpty(inputResCode) && !string.IsNullOrEmpty(inputAirline) && string.IsNullOrEmpty(inputName))
-                {
-                    if (res.Airline.ToUpper() == inputAirline.ToUpper())
-                    {
-                        NewReservation = new Reservation(res.Code, res.FlightCode, res.Airline, res.Cost, res.Name, res.Citizenship, res.Active.ToString());
-                        resNew.Add(NewReservation);
-                    }
-                }
-                // For name
-                else if (!string.IsNullOrEmpty(inputResCode) && string.IsNullOrEmpty(inputAirline) && string.IsNullOrEmpty(inputName))
-                {
-                    if (res.Code.ToUpper() == inputResCode.ToUpper())
-                    {
-                        NewReservation = new Reservation(res.Code, res.FlightCode, res.Airline, res.Cost, res.Name, res.Citizenship, res.Active.ToString());
-                        resNew.Add(NewReservation);
-                    }
-                }
-            }
-        }
-        else
-        {
-            resNew = reservations;
-        }
+
     }
 
 }
+
+
