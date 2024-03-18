@@ -23,5 +23,6 @@
             Seats = seats;
             CostPerSeat = costPerSeat;
         }
+
     }
 }

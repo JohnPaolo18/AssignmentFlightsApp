@@ -17,39 +17,45 @@ namespace AssignmentFlightsApp.Models
 
     public class Reservation
     {
+        private Flight flight;
+
+        public string FlightCode { get; set; }
         public string ReservationCode { get; set; }
         public string FlightCode { get; set; }
         public string Airline { get; set; }
         public string Weekday { get; set; }
         public string Time { get; set; }
+        public double Cost { get; set; }
         public double CostPerSeat { get; set; }
         public string Name { get; set; }
         public string Citizenship { get; set; }
+        public string Status { get; set; }
+        public object Active { get; internal set; }
         public bool IsActive { get; set; } = true;
 
         // Correctly placed constructor
-        public Reservation(string reservationCode, string flightCode, string airline, Flight flight, string name, string citizenship)
+
         {
             ReservationCode = reservationCode;
             FlightCode = flight.FlightCode;
             Airline = flight.Airline;
             Weekday = flight.Weekday;
             Time = flight.Time;
+            FlightCode = flightCode;
+            Cost = cost;
+            Status = status;
+            Airline = airline;
             CostPerSeat = flight.CostPerSeat;
             Name = name;
             Citizenship = citizenship;
             IsActive = true; // Assuming a new reservation is always active initially
         }
 
-        public Reservation(string reservationCode, string flightCode, string airline, string name, string citizenship)
-        {
-            ReservationCode = reservationCode;
-            FlightCode = flightCode;
-            Airline = airline;
+
             Name = name;
             Citizenship = citizenship;
         }
     }
 
-   
+
 }
